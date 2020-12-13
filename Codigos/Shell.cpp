@@ -754,8 +754,8 @@ if (nrp % 4)
 						{
 						if (i < nr && j < nc)
 						  {
-						  bptr1[3*i*ncp+3*j]=GetGValue(col[i][j]);
-						  bptr1[3*i*ncp+3*j+1]=GetBValue(col[i][j]);
+						  bptr1[3*i*ncp+3*j]=GetBValue(col[i][j]);
+						  bptr1[3*i*ncp+3*j+1]=GetGValue(col[i][j]);
 						  bptr1[3*i*ncp+3*j+2]=GetRValue(col[i][j]);
 						  }
 						else
@@ -1526,4 +1526,5 @@ void Write256GrayBitmapFile(float **M,int nr,int nc,char *name)
 /******************************************************************************/
 /************************** Fin del Archivo ***********************************/
 /******************************************************************************/
+
 

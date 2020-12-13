@@ -2,53 +2,52 @@
 
 Window ventana("Totoro Dancing Life", 700, 500);
 
-COLORREF** createImage(int nr, int nc);
-void freeImage(COLORREF** imagen, int nr);
-
-int main()
-{	
-	int nr, nc, x=10,y=10;
+typedef struct{
 	COLORREF** imagen;
-	
-	// leo dimensiones del bmp
-	DimensionesBmp("01.bmp", &nr, &nc); // solo bmp de 24 bits
-	
-	// memoria para la imagen
-	imagen = createImage(nr, nc);
-	
+	int nr, nc;
+}Image;
+//COLORREF** createImage(int nr, int nc);
+Image createImage(char *name);
+void freeImage(Image *img);
+
+int main(){	
+	Image FramesTotoro[27];
+	int nr, nc, x=10,y=10;
+	FramesTotoro[0] = createImage("01.bmp");
 	// leemos en bmp
-	LeeBmpColor(imagen, "01.bmp");
+	LeeBmpColor(FramesTotoro[0].imagen, "01.bmp");
 	
 	// dibujamos el bmp en la posicion (x,y) con zoom=1.0
-	ventana.PlotCBitmap(imagen, nr, nc, x, y, 1.0);
+	ventana.PlotCBitmap(FramesTotoro[0].imagen, FramesTotoro[0].nr, FramesTotoro[0].nc, 0, 0, 1.0);
 	
-	freeImage(imagen, nr);
+	freeImage(&FramesTotoro[0]);
 	
 	return MainLoop();
 }
 
-COLORREF** createImage(int nr, int nc)
-{
+Image createImage(char *name){
 	// memoria para la imagen de dimensiones nr por nc
-	int i;
-	COLORREF** imagen;
+	Image img;
 	
-	imagen = (COLORREF**) malloc(nr * sizeof(COLORREF*));
-	for (i=0; i < nr; i++){
-		imagen[i] = (COLORREF*) malloc(nc * sizeof(COLORREF));
+	// leo dimensiones del bmp
+	DimensionesBmp(name, &img.nr, &img.nc);
+	int i;
+	
+	img.imagen = (COLORREF**) malloc(img.nr * sizeof(COLORREF*));
+	for (i=0; i < img.nr; i++){
+		img.imagen[i] = (COLORREF*) malloc(img.nc * sizeof(COLORREF));
 	}
 	
-	return imagen;
+	return img;
 }
 
-void freeImage(COLORREF** imagen, int nr)
-{	
+void freeImage(Image *img){	
 	int i;
 	
-	for (i=0; i < nr; i++){
-		free(imagen[i]);
+	for (i=0; i < img->nr; i++){
+		free(img->imagen[i]);
 	}
 	
-	free(imagen);
+	free(img->imagen);
 }
 
