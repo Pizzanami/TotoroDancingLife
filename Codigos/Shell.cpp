@@ -1514,7 +1514,7 @@ void Write256GrayBitmapFile(float **M,int nr,int nc,char *name)
 	}
 	for(i=0;i<x;i++)
 	    for(int j=0;j<y;j++)
-            p[i+j*x]=(char)(M[i][y-1-j]);//buffer de pixeles
+	    	p[i+j*x]=(char)(M[i][y-1-j]);//buffer de pixeles
 	HFILE hFile = OpenFile(name,&ofStruct1,OF_CREATE|OF_WRITE);
 	_lwrite(hFile,(LPCSTR) BitHdr,sizeof(BITMAPFILEHEADER));
 	_lwrite(hFile,(LPCSTR) BitInf,sizeof(BITMAPINFOHEADER));
