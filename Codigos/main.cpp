@@ -16,6 +16,7 @@ typedef struct{
 
 Image FramesTotoro[N_F];
 Image FramesIntro[2];
+Image FramesFinal[2];
 int secuencia[100];
 
 Image createImage(char *name);
@@ -27,7 +28,7 @@ void brinco2();
 void brinco3();
 void fallaste();
 void cleanLinea(int y);
-void perdiste(int score);
+int perdiste(int score);
 void repiteSecuencia(int score);
 int revisaSecuencia(int score);
 void iniciaSecuencia();
@@ -63,7 +64,16 @@ int main(){
 		// leemos en bmp
 		LeeBmpColor(FramesIntro[i].imagen, name);
 	}
-	
+	for(i = 0; i < 2; i++){
+		char name[100];
+		sprintf(name, "Final0%d.bmp", i);
+
+		// memoria para la imagen i
+		FramesFinal[i] = createImage(name);
+		
+		// leemos en bmp
+		LeeBmpColor(FramesFinal[i].imagen, name);
+	}
 	ventana.printf(180, WY+20, "PULSA X PARA SALIR");
 	i = 0;
 	unsigned int key = 9;
@@ -91,7 +101,14 @@ int main(){
 			if(k==-1)
 				return 0;
 			else if(k == 0){
-				perdiste(score);
+				if(!perdiste(score)){
+					return 0;
+				}
+				else{
+					score = 0;
+					iniciaSecuencia();
+					game = 1;
+				}
 			}
 			else{
 				secuencia[score+VAL_I] = rand()%3;
@@ -107,6 +124,8 @@ int main(){
 		freeImage(&FramesTotoro[i]);
 	for(i = 0; i < 0; i++)
 		freeImage(&FramesIntro[i]);
+	for(i = 0; i < 0; i++)
+		freeImage(&FramesFinal[i]);	
 	return MainLoop();
 }
 
@@ -243,6 +262,8 @@ void secuenciaSalida(){
 		freeImage(&FramesTotoro[i]);
 	for(i = 0; i < 0; i++)
 		freeImage(&FramesIntro[i]);
+	for(i = 0; i < 0; i++)
+		freeImage(&FramesFinal[i]);
 	return;
 }
 
@@ -273,15 +294,53 @@ void freeImage(Image *img){
 	free(img->imagen);
 }
 
-void perdiste(int score){
-	int i;
-	for(i = 18; i < 27; i++){
-		ventana.PlotCBitmap(FramesTotoro[i].imagen, FramesTotoro[i].nr, FramesTotoro[i].nc, V_REC, 0, 1.0);
-		ventana.PlotCBitmap(FramesTotoro[i].imagen, FramesTotoro[i].nr, FramesTotoro[i].nc, 500+V_REC, 0, 1.0);
-		cleanLinea(WY);
-		ventana.printf(150, WY, "Perdiste! Tu puntuacion final es %d", score);
-		Sleep(VEL - DIF);
+int perdiste(int score){
+	int hScore = 0;
+	int record = 0;//para decirte si eres la persona con el nuevo highscore
+	FILE *highscore = fopen("highscore.bin", "rb");
+	if(highscore = NULL){
+		record = 1;
+		hScore = score;
+		ventana.printf(120, 200, "No puedo leer el archivo de highscores");
+		Sleep(20000);
+		FILE *newhighscore = fopen("highscore.bin", "wb");
+		fwrite(&score,sizeof(int),1, newhighscore);
+		fclose(newhighscore);
 	}
+	else{
+		fread(&hScore, sizeof(int), 1, highscore);
+		fclose(highscore);
+		if(hScore < score){
+			record = 1;
+			FILE *newhighscore = fopen("highscore.bin", "wb");
+			fwrite(&score,sizeof(int),1, newhighscore);
+			fclose(newhighscore);
+		}
+	}
+	int resultado = 0;
+	int i = 0;
+	unsigned int key;
+	while(!resultado){
+		resultado = (int) Kbhit(&key);
+		ventana.PlotCBitmap(FramesFinal[i].imagen, FramesFinal[i].nr, FramesFinal[i].nc, V_REC, 0, 1.0);
+		ventana.PlotCBitmap(FramesFinal[i].imagen, FramesFinal[i].nr, FramesFinal[i].nc, 500+V_REC, 0, 1.0);
+		ventana.printf(160, 220, "Tu puntuacion final es %d", score);
+		if(record){
+			ventana.printf(120, 240, "Conseguiste la puntuacion mas alta!");
+		}
+		else{
+			ventana.printf(150, 240, "La puntuacion mas alta es %d", hScore);
+		}
+		i = (i+1)%2;
+		if(key==88){
+			secuenciaSalida();
+			return 0;
+		}
+		ventana.printf(100, WY, "PULSA CUALQUIER TECLA PARA VOLVER A JUGAR");
+		Sleep(300);
+	}
+	cleanLinea(WY);
+	return 1;
 }
 
 int intro(){
