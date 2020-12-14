@@ -1,0 +1,25 @@
+Nombre del proyecto:
+	Totoro's Dancing Life
+Alumna: 
+	Itzanami Berlanga Contreras
+
+¿Cómo se compila el proyecto?
+	Abrir el proyecto y correrlo, 
+el proyecto se realizó usando Shell
+
+¿Cómo se ejecuta el proyecto?
+	Mi proyecto no recibe parámetros
+desde la terminal, por lo que basta generar
+el .exe para ejecutarlo
+
+¿Cómo se usa el programa?
+	Al inicio del juego se dan indicaciones
+al usuario de la dinámica de este, consiste en 
+observar una secuencia de movimientos que despues
+se deben repetir usando el teclado. Además, para
+salir de algunas de las pantallas como el inicio, 
+final y tutorial del juego basta con presionar 
+cualquier tecla distinta de x, presionando x en 
+cualquier pantalla del juego salimos de él.
+Las indicaciones sobre este manejo también se 
+muestran en la parte inferior de la pantalla.
